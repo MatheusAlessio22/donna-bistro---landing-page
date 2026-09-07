@@ -274,15 +274,41 @@ body {
   overflow: hidden;
 }
 
+/* Fechamento suave no rodapé do Hero: dissolve a foto no preto aveludado
+   da própria seção (var(--bg-surface)) sem nenhuma linha de corte — a
+   próxima seção já nasce nessa mesma cor de fundo, então a transição
+   fica invisível. Puramente decorativo (pointer-events:none). */
+.hero-section::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 220px;
+  background: linear-gradient(180deg, transparent 0%, var(--bg-surface) 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
 .hero-bg {
   position: absolute;
   inset: 0;
   background-size: cover;
-  background-position: center 25%;
+  background-position: center 45%;
   background-repeat: no-repeat;
   z-index: 0;
   animation: heroBreathe 12s ease-in-out infinite alternate;
   will-change: transform;
+}
+
+/* Escurecimento gradual controlado via JS (--hero-scrim atualizado no
+   scroll) — se soma à vinheta estática do .hero-overlay para "fechar"
+   visualmente o Hero conforme o usuário rola. */
+.hero-scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-noir);
+  opacity: 0;
+  z-index: 1;
+  pointer-events: none;
 }
 
 /* A variável --parallax-y é atualizada via JS (scroll, rAF-throttled) e somada
@@ -302,15 +328,30 @@ body {
     radial-gradient(ellipse at 50% 40%, rgba(200, 90, 50, 0.18) 0%, rgba(200, 90, 50, 0) 55%),
     radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(8, 7, 6, 0.6) 100%),
     linear-gradient(180deg, rgba(13, 12, 11, 0.45) 0%, rgba(14, 12, 10, 0.78) 55%, var(--bg-surface) 100%);
-  z-index: 1;
+  z-index: 2;
 }
 
 .hero-content {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 14px;
+  transition: opacity 0.15s linear;
+  will-change: opacity, transform;
+}
+
+/* Eyebrow editorial: pequeno rótulo em caixa alta acima do título, no
+   registro clássico de bistrô de luxo (ver TERMOS.md). */
+.hero-eyebrow {
+  font-family: var(--font-label);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--terracota-light);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+  animation: heroWordReveal 0.6s ease-out 0.1s backwards;
 }
 
 .hero-title {
@@ -339,14 +380,14 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.hero-title em {
-  font-family: var(--font-serif);
-  font-feature-settings: var(--serif-features);
-  font-style: italic;
-  font-weight: 400;
-  letter-spacing: -0.015em;
-  color: var(--terracota-light);
-  display: block;
+.hero-subtitle {
+  font-family: var(--font-sans);
+  font-size: clamp(0.9rem, 1.6vw, 1.05rem);
+  font-weight: 300;
+  line-height: 1.65;
+  max-width: 480px;
+  color: var(--creme-dim);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
   animation: heroSubtitleReveal 0.8s ease-out 1.2s backwards;
 }
 
@@ -445,7 +486,7 @@ body {
   width: 1px;
   height: 24px;
   background: rgba(250, 246, 238, 0.4);
-  z-index: 2;
+  z-index: 3;
   animation: heroScrollBob 2s ease-in-out infinite;
 }
 
@@ -1249,7 +1290,7 @@ body.js-anim .site-footer.is-visible {
   }
 
   .hero-section {
-    min-height: 85vh;
+    min-height: 92vh;
     padding: 0 clamp(32px, 5vw, 80px);
     flex-direction: row;
     align-items: center;
@@ -1262,9 +1303,17 @@ body.js-anim .site-footer.is-visible {
     width: 100%;
   }
 
+  .hero-eyebrow {
+    font-size: 0.85rem;
+  }
+
   .hero-title {
     font-size: clamp(2.4rem, 4.2vw, 3.8rem);
     line-height: 1.15;
+  }
+
+  .hero-subtitle {
+    max-width: 520px;
   }
 
   .hero-actions {

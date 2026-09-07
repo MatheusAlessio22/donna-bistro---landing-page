@@ -39,7 +39,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Marcellus&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <!-- CSS Principal -->
-  <link rel="stylesheet" href="./style.css?v=4.4">
+  <link rel="stylesheet" href="./style.css?v=4.5">
 
   <!-- Schema.org / Restaurant Structured Data (SEO Local & Rich Results) -->
   <script type="application/ld+json">
@@ -131,13 +131,17 @@
       <!-- Hero Section (Cinematográfica & Meia-Luz) -->
       <section class="hero-section" id="hero">
         <div class="hero-bg" id="heroBg" style="background-image: url('images/hero-ambiente.jpg');"></div>
+        <div class="hero-scrim" id="heroScrim" aria-hidden="true"></div>
         <div class="hero-overlay"></div>
 
-        <div class="hero-content">
+        <div class="hero-content" id="heroContent">
+          <span class="hero-eyebrow" data-cms="hero.eyebrow">Alta Gastronomia &amp; Vinhos</span>
+
           <h1 class="hero-title">
             <span class="hero-title-words" id="heroTitleWords" data-cms="hero.title">Poucas mesas. Vinhos que não se repetem. Uma noite sem pressa.</span>
-            <em data-cms="hero.titleEmphasis">Uma experiência à sua altura.</em>
           </h1>
+
+          <p class="hero-subtitle" data-cms="hero.subtitle">Um refúgio intimista no centro de Pato Branco. Uma experiência autoral para quem aprecia o tempo à mesa.</p>
 
           <div class="hero-actions">
             <a href="#reservas" class="btn-luxury" id="heroCtaReserva">
@@ -392,6 +396,6 @@
   </div>
 
   <!-- JavaScript Principal -->
-  <script src="./script.js?v=4.3"></script>
+  <script src="./script.js?v=4.4"></script>
 </body>
 </html>

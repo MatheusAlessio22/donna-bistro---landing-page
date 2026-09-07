@@ -240,32 +240,57 @@ document.addEventListener('DOMContentLoaded', () => {
 
   renderHeroTitleWords(document.getElementById('heroTitleWords')?.textContent || '');
 
-  // 5. Parallax Scrolling no Hero (rAF-throttled, hardware-accelerated via
-  // transform) — 0.2x de velocidade, limitado a -50px, desativado no mobile
-  // e sob prefers-reduced-motion (ver TERMOS.md).
+  // 5. Parallax + Fechamento Suave no Scroll do Hero (rAF-throttled,
+  // hardware-accelerated via transform). Parallax do fundo: 0.2x de
+  // velocidade, limitado a -50px, desativado no mobile e sob
+  // prefers-reduced-motion (ver TERMOS.md). Junto com o parallax, à medida
+  // que o usuário rola, um scrim escurece gradualmente o fundo e o bloco de
+  // texto se dissolve suavemente a partir do primeiro terço da altura do
+  // Hero — a seção "se fecha" sobre si mesma em vez de terminar num corte
+  // seco (o gradiente inferior estático que funde com o fundo da página
+  // vive em CSS, .hero-section::after).
   const heroBg = document.getElementById('heroBg');
   const heroSection = document.getElementById('hero');
+  const heroContent = document.getElementById('heroContent');
+  const heroScrim = document.getElementById('heroScrim');
   const isMobileViewport = window.matchMedia('(max-width: 699px)').matches;
 
-  if (heroBg && heroSection && !prefersReducedMotion && !isMobileViewport) {
-    let parallaxTicking = false;
+  if (heroBg && heroSection && !prefersReducedMotion) {
+    let heroScrollTicking = false;
 
-    function applyParallax() {
-      parallaxTicking = false;
+    function applyHeroScrollEffects() {
+      heroScrollTicking = false;
       const rect = heroSection.getBoundingClientRect();
       if (rect.bottom < 0 || rect.top > window.innerHeight) return;
-      const offset = Math.min(window.scrollY * 0.2, 50);
-      heroBg.style.setProperty('--parallax-y', `${-offset}px`);
+
+      if (!isMobileViewport) {
+        const offset = Math.min(window.scrollY * 0.2, 50);
+        heroBg.style.setProperty('--parallax-y', `${-offset}px`);
+      }
+
+      const heroHeight = heroSection.offsetHeight || 1;
+      const progress = Math.min(Math.max(window.scrollY / heroHeight, 0), 1);
+
+      if (heroScrim) {
+        heroScrim.style.opacity = (progress * 0.55).toFixed(3);
+      }
+
+      if (heroContent) {
+        const fadeStart = 0.33;
+        const fade = 1 - Math.min(Math.max((progress - fadeStart) / (1 - fadeStart), 0), 1);
+        heroContent.style.opacity = fade.toFixed(3);
+        heroContent.style.transform = `translateY(${((1 - fade) * -16).toFixed(1)}px)`;
+      }
     }
 
     window.addEventListener('scroll', () => {
-      if (!parallaxTicking) {
-        parallaxTicking = true;
-        requestAnimationFrame(applyParallax);
+      if (!heroScrollTicking) {
+        heroScrollTicking = true;
+        requestAnimationFrame(applyHeroScrollEffects);
       }
     }, { passive: true });
 
-    applyParallax();
+    applyHeroScrollEffects();
   }
 
   // 6. Scroll Reveal Orquestrado (Stagger via IntersectionObserver)

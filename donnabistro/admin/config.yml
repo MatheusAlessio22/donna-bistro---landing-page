@@ -28,8 +28,9 @@ collections:
             name: "hero"
             widget: "object"
             fields:
+              - { label: "Eyebrow (texto pequeno acima do título)", name: "eyebrow", widget: "string" }
               - { label: "Título Principal", name: "title", widget: "string" }
-              - { label: "Título (linha em destaque)", name: "titleEmphasis", widget: "string" }
+              - { label: "Subtítulo Descritivo", name: "subtitle", widget: "text" }
               - { label: "Imagem de Fundo do Hero", name: "image", widget: "image" }
               - { label: "Texto do Botão de Reserva", name: "ctaLabel", widget: "string" }
 
