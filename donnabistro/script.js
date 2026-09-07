@@ -118,7 +118,16 @@ document.addEventListener('DOMContentLoaded', () => {
     let initialScrollLeft = 0;
     let isInteracting = false;
     let resumeTimer = null;
-    const speed = 0.75; // pixels por frame
+    const speed = 0.4; // pixels por frame
+
+    // Posição "real" com precisão fracionária, mantida à parte do scrollLeft do
+    // navegador. Alguns navegadores arredondam scrollLeft para o pixel inteiro
+    // mais próximo a cada leitura/escrita — com um passo por frame menor que
+    // 0.5px isso trava o carrossel em 0 para sempre (0 + 0.4 arredonda de volta
+    // para 0). Acumulando em uma variável JS comum, o progresso fracionário
+    // nunca se perde entre frames, então qualquer velocidade, por menor que
+    // seja, sempre avança suavemente.
+    let currentPos = viewport.scrollLeft;
 
     function pauseGlide() {
       isInteracting = true;
@@ -137,15 +146,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // (scrollWidth / 3), não da faixa inteira.
     function autoGlide() {
       if (!isInteracting && !prefersReducedMotion) {
-        viewport.scrollLeft += speed;
+        currentPos += speed;
         const unitWidth = track.scrollWidth / 3;
         if (unitWidth > 0) {
-          if (viewport.scrollLeft >= unitWidth) {
-            viewport.scrollLeft -= unitWidth;
-          } else if (viewport.scrollLeft <= 0) {
-            viewport.scrollLeft += unitWidth;
+          if (currentPos >= unitWidth) {
+            currentPos -= unitWidth;
+          } else if (currentPos <= 0) {
+            currentPos += unitWidth;
           }
         }
+        viewport.scrollLeft = currentPos;
+      } else {
+        // Ressincroniza com a posição real enquanto o usuário arrasta/toca,
+        // para retomar o glide exatamente de onde a interação parou.
+        currentPos = viewport.scrollLeft;
       }
       requestAnimationFrame(autoGlide);
     }

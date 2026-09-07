@@ -153,26 +153,24 @@ body {
 
 .brand-wrapper {
   display: flex;
-  align-items: baseline;
-  gap: 3px;
+  align-items: center;
   text-decoration: none;
   order: 1;
 }
 
-.brand-name {
-  font-family: var(--font-serif);
-  font-feature-settings: var(--serif-features);
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--creme);
-  letter-spacing: -0.015em;
-  text-transform: lowercase;
+.brand-logo-img {
+  height: 36px;
+  width: auto;
+  max-width: 140px;
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
+  transition: opacity 250ms ease, transform 250ms ease;
 }
 
-.brand-dot {
-  color: var(--terracota);
-  font-size: 1.4rem;
-  font-weight: 900;
+.brand-logo-img:hover {
+  opacity: 0.92;
+  transform: scale(1.02);
 }
 
 /* Ações do cabeçalho: ícones sociais discretos + link de reserva
@@ -535,13 +533,13 @@ body {
 .carousel-track-group {
   display: flex;
   flex-shrink: 0;
-  gap: 16px;
-  padding-right: 16px;
+  gap: 20px;
+  padding-right: 20px;
 }
 
 .carousel-slide {
   flex: 0 0 auto;
-  width: 250px;
+  width: 300px;
   display: flex;
   flex-direction: column;
   transition: transform 300ms var(--ease-spring);
@@ -1036,17 +1034,25 @@ body.js-anim .manifesto-section.is-visible .manifesto-glass-icon {
   text-align: center;
 }
 
-.footer-logo {
-  font-family: var(--font-serif);
-  font-feature-settings: var(--serif-features);
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: -0.015em;
-  color: var(--creme);
+.footer-logo-link {
+  display: inline-block;
+  text-decoration: none;
+  transition: opacity 250ms ease, transform 250ms ease;
 }
 
-.footer-logo span {
-  color: var(--terracota);
+.footer-logo-link:hover {
+  opacity: 0.92;
+  transform: scale(1.02);
+}
+
+.footer-logo-img {
+  height: 48px;
+  width: auto;
+  max-width: 180px;
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.5));
 }
 
 .footer-tagline {
@@ -1194,6 +1200,10 @@ body.js-anim .site-footer.is-visible {
     margin: 0 auto;
     gap: 20px;
   }
+
+  .carousel-slide {
+    width: 340px;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -1206,6 +1216,11 @@ body.js-anim .site-footer.is-visible {
     flex-wrap: nowrap;
     height: 80px;
     width: 100%;
+  }
+
+  .brand-logo-img {
+    height: 42px;
+    max-width: 170px;
   }
 
   .site-nav {
@@ -1273,7 +1288,12 @@ body.js-anim .site-footer.is-visible {
   }
 
   .carousel-slide {
-    width: 280px;
+    width: 440px;
+  }
+
+  .carousel-track-group {
+    gap: 32px;
+    padding-right: 32px;
   }
 
   .ambiente-section {

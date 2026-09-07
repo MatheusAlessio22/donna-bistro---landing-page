@@ -1,5 +1,6 @@
 .playwright-mcp/
 *.png
+!donnabistro/images/logo-donna-bistro.png
 node_modules/
 .DS_Store
 Thumbs.db
