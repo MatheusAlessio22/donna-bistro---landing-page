@@ -115,27 +115,21 @@ body.js-anim .reveal.is-visible {
 
 body {
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  background: radial-gradient(circle at 50% 15%, #201a15 0%, var(--bg-noir) 100%);
+  width: 100%;
+  background-color: var(--bg-surface);
+  color: var(--creme);
+  font-family: var(--font-sans);
   overflow-x: hidden;
 }
 
-/* Base Container Mobile-First (Max-Width 480px) */
+/* Container Responsivo Fluido (Adapta de 320px mobile a 1920px+ desktop) */
 .mobile-container {
   width: 100%;
-  max-width: 480px;
+  max-width: 100%;
   min-height: 100vh;
   background-color: var(--bg-surface);
   position: relative;
-  box-shadow: 0 0 70px rgba(0, 0, 0, 0.95);
-  /* overflow-x: clip (não hidden) evita rolagem horizontal indevida sem
-     quebrar o position: sticky do header — hidden/auto em qualquer eixo
-     força o outro eixo a virar "auto", ancorando o sticky a este container
-     em vez da viewport. */
   overflow-x: clip;
-  border-left: 1px solid rgba(255, 255, 255, 0.03);
-  border-right: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 /* ==========================================================================
@@ -1163,40 +1157,17 @@ body.js-anim .site-footer.is-visible {
    largura fixa). A partir daí o layout se abre para múltiplas colunas.
    ========================================================================== */
 @media (min-width: 700px) and (max-width: 1023px) {
-  .mobile-container {
-    max-width: 640px;
-  }
-}
-
-@media (min-width: 1024px) {
-  body {
-    background: radial-gradient(circle at 50% 0%, #201a15 0%, var(--bg-noir) 60%);
-  }
-
-  .mobile-container {
-    max-width: 1180px;
-    box-shadow: none;
-    border-left: none;
-    border-right: none;
-    padding-bottom: 0;
-  }
-
-  .grain-overlay {
-    opacity: 0.025;
-  }
-
   .site-header {
-    padding: 0 56px;
+    padding: 0 32px;
+    height: 72px;
     flex-wrap: nowrap;
-    height: 76px;
   }
 
   .site-nav {
     order: 2;
     flex: 0 1 auto;
-    overflow: visible;
+    gap: 24px;
     padding-bottom: 0;
-    gap: 36px;
   }
 
   .header-actions {
@@ -1204,15 +1175,64 @@ body.js-anim .site-footer.is-visible {
   }
 
   .hero-section {
-    min-height: 680px;
-    padding: 0 56px;
+    min-height: 640px;
+    padding: 0 40px;
+  }
+
+  .ambiente-grid {
+    max-width: 720px;
+    margin: 0 auto;
+    gap: 20px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grain-overlay {
+    opacity: 0.025;
+  }
+
+  .site-header {
+    padding: 0 clamp(32px, 5vw, 80px);
+    flex-wrap: nowrap;
+    height: 80px;
+    width: 100%;
+  }
+
+  .site-nav {
+    order: 2;
+    flex: 0 1 auto;
+    overflow: visible;
+    padding-bottom: 0;
+    gap: 40px;
+  }
+
+  .nav-link {
+    font-size: 0.78rem;
+    letter-spacing: 0.24em;
+  }
+
+  .header-actions {
+    order: 3;
+    gap: 20px;
+  }
+
+  .hero-section {
+    min-height: 85vh;
+    padding: 0 clamp(32px, 5vw, 80px);
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
+    width: 100%;
   }
 
   .hero-content {
-    max-width: 620px;
+    max-width: 740px;
+    width: 100%;
+  }
+
+  .hero-title {
+    font-size: clamp(2.4rem, 4.2vw, 3.8rem);
+    line-height: 1.15;
   }
 
   .hero-actions {
@@ -1223,37 +1243,95 @@ body.js-anim .site-footer.is-visible {
     width: auto;
   }
 
-  .section-wrapper,
-  .ambiente-section,
+  .section-wrapper {
+    padding: 100px 0;
+    width: 100%;
+  }
+
+  .section-header {
+    max-width: 800px;
+    margin: 0 auto 40px;
+    padding: 0 24px;
+    text-align: center;
+  }
+
+  .carousel-viewport {
+    width: 100%;
+    padding: 20px 0 30px;
+    mask-image: linear-gradient(90deg, transparent 0%, black 6%, black 94%, transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 6%, black 94%, transparent 100%);
+  }
+
+  .carousel-slide {
+    width: 280px;
+  }
+
+  .ambiente-section {
+    padding: 110px 0;
+    width: 100%;
+  }
+
+  .ambiente-text-block {
+    max-width: 800px;
+    margin: 0 auto 48px;
+    padding: 0 24px;
+    text-align: center;
+  }
+
+  .ambiente-grid {
+    width: 100%;
+    padding: 0 clamp(32px, 5vw, 80px);
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+
   .reservas-section {
-    padding: 90px 24px;
+    padding: 110px 24px;
+    width: 100%;
+  }
+
+  .reservas-container {
+    max-width: 580px;
+    margin: 0 auto;
+  }
+
+  .reservas-fields {
+    flex-direction: row;
+    gap: 28px;
+    align-items: flex-end;
+  }
+
+  .reservas-field {
+    flex: 1;
   }
 
   .manifesto-section {
-    padding: 128px 48px;
+    padding: 140px 32px 110px;
+    width: 100%;
+  }
+
+  .manifesto-container {
+    max-width: 820px;
+    margin: 0 auto;
   }
 
   .manifesto-glow {
-    width: 500px;
-    height: 500px;
+    width: 550px;
+    height: 550px;
   }
 
   .manifesto-glass-icon {
     margin-top: 80px;
   }
 
-  .ambiente-text-block {
-    max-width: 760px;
-    margin: 0 auto 40px;
-  }
-
-  .ambiente-grid {
-    max-width: 900px;
-    margin: 0 auto;
-    gap: 20px;
+  .site-footer {
+    padding: 70px 24px 36px;
+    width: 100%;
   }
 
   .footer-inner {
-    padding: 64px 24px 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
   }
 }
