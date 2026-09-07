@@ -554,7 +554,7 @@ body {
 .carousel-slide-media {
   width: 100%;
   aspect-ratio: 4 / 5;
-  border-radius: 20px 8px 20px 8px;
+  border-radius: 2px;
   overflow: hidden;
   border: 1px solid var(--border-gold-subtle);
   box-shadow: var(--shadow-card);
@@ -622,7 +622,7 @@ body {
 
 .ambiente-photo {
   aspect-ratio: 4 / 3;
-  border-radius: 12px;
+  border-radius: 2px;
   overflow: hidden;
   border: 1px solid rgba(209, 178, 114, 0.15);
   background-color: #1e1b18;
