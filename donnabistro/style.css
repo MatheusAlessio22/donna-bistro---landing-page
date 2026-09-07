@@ -1098,7 +1098,12 @@ body.js-anim .manifesto-section.is-visible .manifesto-glass-icon {
   color: var(--creme-muted);
 }
 
+/* Em telas estreitas, "Dom — fechado" quebra no meio ("Dom —" numa linha,
+   "fechado" sozinho na outra) porque é texto corrido; forçando bloco, a
+   dupla desce inteira para sua própria linha, sem quebrar internamente. */
 .footer-hours-closed {
+  display: block;
+  margin-top: 4px;
   color: rgba(197, 187, 170, 0.4);
 }
 
@@ -1333,5 +1338,10 @@ body.js-anim .site-footer.is-visible {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 24px;
+  }
+
+  .footer-hours-closed {
+    display: inline;
+    margin-top: 0;
   }
 }
