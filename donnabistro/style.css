@@ -403,46 +403,55 @@ body {
   margin-top: 8px;
 }
 
-/* Botão de hotelaria/gastronomia de luxo: fio de ouro, cantos retos,
-   caixa alta espaçada — nunca uma pílula sólida arredondada. Transform
-   (microinteração de toque) e cor (preenchimento no hover) transicionam
-   em velocidades diferentes para um feedback tátil mais autêntico. */
+/* Botão de hotelaria/gastronomia de luxo: glassmorphism noturno (fundo
+   aveludado translúcido + blur) em vez de uma caixa oca transparente, fio
+   de ouro champagne, cantos retos — nunca uma pílula sólida arredondada. */
 .btn-luxury {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  background: transparent;
-  border: 1px solid rgba(212, 175, 103, 0.45);
+  gap: 10px;
+  background: rgba(22, 19, 17, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(209, 178, 114, 0.35);
   border-radius: 2px;
-  color: #F5EFE6;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  color: #FAF6EE;
   font-family: var(--font-label);
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   font-weight: 500;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  padding: 14px 22px;
+  padding: 15px 32px;
   text-decoration: none;
-  transition: background 0.4s var(--ease-out-organic), color 0.4s var(--ease-out-organic),
-              border-color 0.4s var(--ease-out-organic), transform 150ms var(--ease-out-organic);
+  transition: background 0.4s var(--ease-out-organic), border-color 0.4s var(--ease-out-organic),
+              box-shadow 0.4s var(--ease-out-organic), transform 150ms var(--ease-out-organic);
   cursor: pointer;
 }
 
-.btn-luxury::after {
-  content: '—';
-  font-family: var(--font-sans);
-  margin-left: 2px;
+/* Seta direcional discreta — substitui o travessão solto (clichê de
+   template automático) por um gesto editorial mais sutil. */
+.btn-luxury-arrow {
+  display: inline-flex;
+  flex-shrink: 0;
+  transition: transform 0.3s var(--ease-out-organic);
 }
 
 .btn-luxury:hover,
 .btn-luxury:focus-visible {
-  background: var(--ouro);
-  color: var(--bg-noir);
+  background: rgba(200, 90, 50, 0.22);
   border-color: var(--ouro);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(209, 178, 114, 0.2);
+}
+
+.btn-luxury:hover .btn-luxury-arrow,
+.btn-luxury:focus-visible .btn-luxury-arrow {
+  transform: translate(2px, -2px);
 }
 
 .btn-luxury:active {
-  transform: scale(0.97);
+  transform: scale(0.98);
 }
 
 .btn-block {
@@ -452,12 +461,12 @@ body {
 /* CTA do Hero — entrada on-mount (backwards segura o estado inicial durante
    o delay e libera opacity/transform de volta ao cascade normal ao terminar,
    para não brigar com a transição de :hover/:active abaixo) + glow pulsante
-   contínuo sincronizado com o fim da entrada (1.8s + 0.5s = 2.3s). */
+   contínuo sincronizado com o fim da entrada (1.8s + 0.5s = 2.3s). O glow
+   soma-se à sombra de profundidade do glassmorphism (não a substitui), e
+   pausa no hover para não competir com a sombra de :hover. */
 #heroCtaReserva {
   animation: heroCtaEntrance 0.5s ease-out 1.8s backwards,
              heroCtaGlow 4s ease-in-out 2.3s infinite;
-  transition: background 0.4s var(--ease-out-organic), color 0.4s var(--ease-out-organic),
-              border-color 0.4s var(--ease-out-organic), transform 0.2s ease-out;
 }
 
 @keyframes heroCtaEntrance {
@@ -466,16 +475,19 @@ body {
 }
 
 @keyframes heroCtaGlow {
-  0%, 100% { box-shadow: 0 0 0px rgba(196, 122, 58, 0); }
-  50% { box-shadow: 0 0 12px rgba(196, 122, 58, 0.15); }
+  0%, 100% {
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08),
+                0 0 0px rgba(209, 178, 114, 0);
+  }
+  50% {
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08),
+                0 0 16px rgba(209, 178, 114, 0.25);
+  }
 }
 
-#heroCtaReserva:hover {
-  transform: scale(1.03);
-}
-
-#heroCtaReserva:active {
-  transform: scale(0.97);
+#heroCtaReserva:hover,
+#heroCtaReserva:focus-visible {
+  animation-play-state: paused;
 }
 
 /* ==========================================================================
@@ -1235,7 +1247,6 @@ body.js-anim .site-footer.is-visible {
     opacity: 0.025;
   }
 
-  .btn-luxury,
   .reservas-cta {
     font-size: 0.74rem;
     letter-spacing: 0.22em;
@@ -1308,7 +1319,7 @@ body.js-anim .site-footer.is-visible {
   }
 
   .section-wrapper {
-    padding: 100px 0;
+    padding: 64px 0;
     width: 100%;
   }
 
@@ -1336,13 +1347,13 @@ body.js-anim .site-footer.is-visible {
   }
 
   .ambiente-section {
-    padding: 110px 0;
+    padding: 64px 0;
     width: 100%;
   }
 
   .ambiente-text-block {
     max-width: 800px;
-    margin: 0 auto 48px;
+    margin: 0 auto 36px;
     padding: 0 24px;
     text-align: center;
   }
