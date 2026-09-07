@@ -1,0 +1,1259 @@
+/* ==========================================================================
+   DONNA BISTRÔ - LUXURY EXPERIENCE DESIGN SYSTEM
+   Estilo: Organic / Fluid + Editorial (ver TERMOS.md)
+   Paleta: Terracota Quente, Creme Acolhedor & Fio de Ouro
+   ========================================================================== */
+
+/* Força tema escuro em todos os popups nativos do navegador (calendário do
+   input[type=date], seletores de sistema, etc.) — sem isso o Chromium/Edge
+   no Windows ignora a paleta do site e renderiza os popups em branco. */
+:root, html, body {
+  color-scheme: dark;
+}
+
+:root {
+  /* Base de Contraste — fundo aveludado meia-luz */
+  --bg-noir: #12100E;
+  --bg-surface: #1A1715;
+  --noir-deep: var(--bg-noir);
+  --noir-surface: var(--bg-surface);
+  --noir-card: #221E1B;
+  --noir-card-hover: #2A2521;
+  --noir-elevated: #322C27;
+
+  /* Tons Quentes — Terracota (acento editorial principal) */
+  --terracota: #C85A32;
+  --terracota-dark: #9E3D1E;
+  --terracota-light: #E0744B;
+  --ambar-glow: rgba(200, 90, 50, 0.2);
+
+  /* Ouro — reservado ao fio dos botões editoriais */
+  --ouro: #D1B272;
+  --ouro-light: #E4CC9A;
+  --ouro-muted: #A98A54;
+
+  /* Creme / Off-White Acolhedor */
+  --creme: #FAF6EE;
+  --creme-soft: #F2ECE0;
+  --creme-muted: #C5BBAA;
+  --creme-dim: rgba(250, 246, 238, 0.55);
+
+  --border-gold-subtle: rgba(209, 178, 114, 0.18);
+  --border-terracota-subtle: rgba(200, 90, 50, 0.22);
+  --border-subtle: rgba(255, 255, 255, 0.07);
+
+  /* Fontes — Display Serif + Label Monumental + Sans Limpa */
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-label: 'Marcellus', 'Cormorant Garamond', serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --serif-features: "cv02", "cv03", "cv04";
+
+  /* Transições, Easings & Sombras */
+  --transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-organic: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --shadow-card: 0 10px 30px -5px rgba(0, 0, 0, 0.7);
+  --shadow-gold: 0 4px 25px rgba(209, 178, 114, 0.15);
+}
+
+/* Reset Global */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 85px; /* Compensa o header sticky em navegação por âncora nativa (#hash direto, voltar/avançar) */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-noir);
+  color: var(--creme);
+  font-family: var(--font-sans);
+}
+
+/* Reforça a mesma compensação em cada seção com âncora, para qualquer
+   rolagem nativa do navegador (scrollIntoView, :target, busca na página). */
+section[id] {
+  scroll-margin-top: 85px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Fade-in on Scroll com Staggered Entrance (ativado via JS com IntersectionObserver) */
+body.js-anim .reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 500ms var(--ease-out-organic), transform 500ms var(--ease-out-organic);
+}
+
+body.js-anim .reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Textura de Granulação Cinematográfica (Film Grain) */
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.03;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 15%, #201a15 0%, var(--bg-noir) 100%);
+  overflow-x: hidden;
+}
+
+/* Base Container Mobile-First (Max-Width 480px) */
+.mobile-container {
+  width: 100%;
+  max-width: 480px;
+  min-height: 100vh;
+  background-color: var(--bg-surface);
+  position: relative;
+  box-shadow: 0 0 70px rgba(0, 0, 0, 0.95);
+  /* overflow-x: clip (não hidden) evita rolagem horizontal indevida sem
+     quebrar o position: sticky do header — hidden/auto em qualquer eixo
+     força o outro eixo a virar "auto", ancorando o sticky a este container
+     em vez da viewport. */
+  overflow-x: clip;
+  border-left: 1px solid rgba(255, 255, 255, 0.03);
+  border-right: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+/* ==========================================================================
+   HEADER / NAVEGAÇÃO STICKY (Glassmorphism)
+   ========================================================================== */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(14, 13, 12, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border-terracota-subtle);
+  padding: 13px 20px 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  row-gap: 10px;
+}
+
+.brand-wrapper {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  text-decoration: none;
+  order: 1;
+}
+
+.brand-name {
+  font-family: var(--font-serif);
+  font-feature-settings: var(--serif-features);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--creme);
+  letter-spacing: -0.015em;
+  text-transform: lowercase;
+}
+
+.brand-dot {
+  color: var(--terracota);
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+
+/* Ações do cabeçalho: ícones sociais discretos + link de reserva
+   (nada de pílulas de status tipo delivery/tracking). */
+.header-actions {
+  order: 2;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.social-icon-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  color: var(--creme-muted);
+  transition: var(--transition);
+}
+
+.social-icon-link svg {
+  width: 100%;
+  height: 100%;
+}
+
+.social-icon-link:hover {
+  color: var(--terracota-light);
+}
+
+.header-reserve-link {
+  font-family: var(--font-label);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--terracota-light);
+  text-decoration: none;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border-terracota-subtle);
+  padding-bottom: 2px;
+  transition: var(--transition);
+}
+
+.header-reserve-link:hover {
+  color: var(--ouro-light);
+  border-bottom-color: var(--terracota);
+}
+
+/* Nav compacta: em mobile vira uma faixa de scroll horizontal abaixo do header,
+   sem ocupar espaço vertical excessivo nem exigir um menu hambúrguer. */
+.site-nav {
+  order: 3;
+  flex: 0 0 100%;
+  display: flex;
+  gap: 22px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: 12px;
+}
+
+.site-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-link {
+  font-family: var(--font-label);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--creme-muted);
+  opacity: 0.85;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding-bottom: 3px;
+  border-bottom: 1px solid transparent;
+  transition: var(--transition);
+}
+
+.nav-link:hover,
+.nav-link:active {
+  color: var(--terracota-light);
+  opacity: 1;
+  border-bottom-color: var(--border-terracota-subtle);
+}
+
+/* ==========================================================================
+   HERO SECTION (Cinematográfica & Meia-Luz, Parallax Sutil)
+   ========================================================================== */
+.hero-section {
+  position: relative;
+  min-height: 560px;
+  padding: 60px 22px 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 25%;
+  background-repeat: no-repeat;
+  z-index: 0;
+  animation: heroBreathe 12s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* A variável --parallax-y é atualizada via JS (scroll, rAF-throttled) e somada
+   ao "respiro" de zoom contínuo (Ken Burns) — parallax e breathing vivem na
+   mesma propriedade sem se sobrescreverem. */
+@keyframes heroBreathe {
+  0% { transform: scale(1) translateY(var(--parallax-y, 0px)); }
+  100% { transform: scale(1.04) translateY(var(--parallax-y, 0px)); }
+}
+
+/* Vinheta aveludada nas bordas + iluminação quente (âmbar) sutil ao centro +
+   leitura garantida no rodapé (funde com a cor de fundo da seção seguinte). */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(200, 90, 50, 0.18) 0%, rgba(200, 90, 50, 0) 55%),
+    radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(8, 7, 6, 0.6) 100%),
+    linear-gradient(180deg, rgba(13, 12, 11, 0.45) 0%, rgba(14, 12, 10, 0.78) 55%, var(--bg-surface) 100%);
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.hero-title {
+  font-family: var(--font-serif);
+  font-feature-settings: var(--serif-features);
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 1.15;
+  font-weight: 300;
+  letter-spacing: -0.015em;
+  color: #FAF7F2;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
+}
+
+/* Reveal escalonado por palavra (on-mount): cada <span> nasce com opacity:0 +
+   translateY(12px) e anima para o estado natural via animation-delay próprio
+   (definido inline por palavra em renderHeroTitleWords, script.js). fill-mode
+   "backwards" segura o estado inicial durante o delay e libera a propriedade
+   transform de volta ao cascade normal assim que a animação termina. */
+.hero-word {
+  display: inline-block;
+  animation: heroWordReveal 0.5s ease-out backwards;
+}
+
+@keyframes heroWordReveal {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-title em {
+  font-family: var(--font-serif);
+  font-feature-settings: var(--serif-features);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  color: var(--terracota-light);
+  display: block;
+  animation: heroSubtitleReveal 0.8s ease-out 1.2s backwards;
+}
+
+@keyframes heroSubtitleReveal {
+  from { opacity: 0; filter: blur(8px); }
+  to { opacity: 1; filter: blur(0); }
+}
+
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+/* Botão de hotelaria/gastronomia de luxo: fio de ouro, cantos retos,
+   caixa alta espaçada — nunca uma pílula sólida arredondada. Transform
+   (microinteração de toque) e cor (preenchimento no hover) transicionam
+   em velocidades diferentes para um feedback tátil mais autêntico. */
+.btn-luxury {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid rgba(212, 175, 103, 0.45);
+  border-radius: 2px;
+  color: #F5EFE6;
+  font-family: var(--font-label);
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 16px 24px;
+  text-decoration: none;
+  transition: background 0.4s var(--ease-out-organic), color 0.4s var(--ease-out-organic),
+              border-color 0.4s var(--ease-out-organic), transform 150ms var(--ease-out-organic);
+  cursor: pointer;
+}
+
+.btn-luxury::after {
+  content: '—';
+  font-family: var(--font-sans);
+  margin-left: 2px;
+}
+
+.btn-luxury:hover,
+.btn-luxury:focus-visible {
+  background: var(--ouro);
+  color: var(--bg-noir);
+  border-color: var(--ouro);
+}
+
+.btn-luxury:active {
+  transform: scale(0.97);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* CTA do Hero — entrada on-mount (backwards segura o estado inicial durante
+   o delay e libera opacity/transform de volta ao cascade normal ao terminar,
+   para não brigar com a transição de :hover/:active abaixo) + glow pulsante
+   contínuo sincronizado com o fim da entrada (1.8s + 0.5s = 2.3s). */
+#heroCtaReserva {
+  animation: heroCtaEntrance 0.5s ease-out 1.8s backwards,
+             heroCtaGlow 4s ease-in-out 2.3s infinite;
+  transition: background 0.4s var(--ease-out-organic), color 0.4s var(--ease-out-organic),
+              border-color 0.4s var(--ease-out-organic), transform 0.2s ease-out;
+}
+
+@keyframes heroCtaEntrance {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes heroCtaGlow {
+  0%, 100% { box-shadow: 0 0 0px rgba(196, 122, 58, 0); }
+  50% { box-shadow: 0 0 12px rgba(196, 122, 58, 0.15); }
+}
+
+#heroCtaReserva:hover {
+  transform: scale(1.03);
+}
+
+#heroCtaReserva:active {
+  transform: scale(0.97);
+}
+
+/* Indicador de Scroll — traço vertical pulsante no rodapé do Hero */
+.hero-scroll-indicator {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  width: 1px;
+  height: 24px;
+  background: rgba(250, 246, 238, 0.4);
+  z-index: 2;
+  animation: heroScrollBob 2s ease-in-out infinite;
+}
+
+@keyframes heroScrollBob {
+  0%, 100% { opacity: 0; transform: translateX(-50%) translateY(0); }
+  50% { opacity: 1; transform: translateX(-50%) translateY(8px); }
+}
+
+/* ==========================================================================
+   DESTAQUES DA COZINHA — CARROSSEL EDITORIAL (#cardapio)
+   ========================================================================== */
+.section-wrapper {
+  padding: 70px 20px;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.section-eyebrow {
+  display: inline-block;
+  font-family: var(--font-label);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--terracota-light);
+  margin-bottom: 6px;
+}
+
+.section-title {
+  font-family: var(--font-serif);
+  font-feature-settings: var(--serif-features);
+  font-size: clamp(1.5rem, 6vw, 1.95rem);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--creme);
+  line-height: 1.2;
+}
+
+.section-desc {
+  font-size: 0.85rem;
+  font-weight: 300;
+  color: var(--creme-muted);
+  margin-top: 10px;
+  line-height: 1.75;
+}
+
+.dishes-carousel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Viewport com máscara gradiente: os pratos surgem/desaparecem suavemente nas bordas.
+   Padding extra para o hover-lift dos cards (scale + translateY) não ser cortado. */
+.carousel-viewport {
+  overflow: hidden;
+  padding: 14px 0 20px;
+  mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%);
+}
+
+/* Faixa contínua: duas cópias idênticas dos pratos lado a lado, deslizando -50%
+   em loop linear perfeito (a segunda cópia é aria-hidden, só existe para o glide). */
+.carousel-track {
+  display: flex;
+  width: max-content;
+  animation: infiniteScroll 38s linear infinite;
+}
+
+.carousel-viewport:hover .carousel-track,
+.carousel-viewport.is-touching .carousel-track {
+  animation-play-state: paused;
+}
+
+@keyframes infiniteScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.carousel-track-group {
+  display: flex;
+  flex-shrink: 0;
+  gap: 16px;
+  padding-right: 16px;
+}
+
+.carousel-slide {
+  flex: 0 0 auto;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 300ms var(--ease-spring);
+}
+
+/* Scale on Hover (spring orgânico) — só reage a hover real (mouse/desktop);
+   no touch, o carrossel continua deslizando normalmente. */
+.carousel-slide:hover {
+  transform: scale(1.03) translateY(-4px);
+}
+
+.carousel-slide-media {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: 20px 8px 20px 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-gold-subtle);
+  box-shadow: var(--shadow-card);
+  margin-bottom: 14px;
+  background-color: #1e1b18;
+  transition: box-shadow 300ms var(--ease-spring);
+}
+
+.carousel-slide:hover .carousel-slide-media {
+  box-shadow: 0 16px 34px var(--ambar-glow), var(--shadow-card);
+}
+
+.carousel-slide-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 300ms var(--ease-spring);
+}
+
+.carousel-slide:hover .carousel-slide-media img {
+  transform: scale(1.06);
+}
+
+.carousel-slide-title {
+  font-family: var(--font-serif);
+  font-feature-settings: var(--serif-features);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--creme);
+  margin-bottom: 6px;
+}
+
+.carousel-slide-desc {
+  font-size: 0.82rem;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--creme-muted);
+  line-height: 1.75;
+}
+
+/* ==========================================================================
+   A ATMOSFERA (#ambiente) — Grid 2x2 Padronizado
+   ========================================================================== */
+.ambiente-section {
+  background: linear-gradient(180deg, var(--bg-surface) 0%, #1a1614 50%, var(--bg-surface) 100%);
+  padding: 70px 20px;
+  border-top: 1px solid var(--border-terracota-subtle);
+  border-bottom: 1px solid var(--border-terracota-subtle);
+}
+
+.ambiente-text-block {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+/* Regra de ouro: todas as fotos do ambiente têm a mesma proporção e o mesmo
+   tratamento visual — nada de alturas diferentes ou recortes desiguais. */
+.ambiente-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.ambiente-photo {
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(209, 178, 114, 0.15);
+  background-color: #1e1b18;
+}
+
+.ambiente-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ==========================================================================
+   SUA MESA — RESERVA (#reservas)
+   Sem card, sem borda: um formulário impresso em papel escuro, integrado
+   à página. Underline nos campos (não caixa), stepper numérico em vez de
+   dropdown, CTA sólido em terracota (única exceção à regra "ouro só em
+   borda de botão" — aqui o ouro entra apenas no hover do CTA).
+   ========================================================================== */
+.reservas-section {
+  padding: 70px 20px;
+}
+
+.reservas-container {
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.reservas-header {
+  margin-bottom: 48px;
+}
+
+.reservas-title {
+  font-family: var(--font-serif);
+  font-feature-settings: var(--serif-features);
+  font-size: clamp(1.8rem, 6vw, 2.3rem);
+  font-weight: 300;
+  letter-spacing: -0.015em;
+  color: #FAF7F2;
+}
+
+.reservas-subtitle {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 300;
+  color: var(--creme-muted);
+  margin-top: 8px;
+  line-height: 1.6;
+}
+
+.reservas-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin-bottom: 32px;
+  text-align: left;
+}
+
+.reservas-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reservas-field-label {
+  font-family: var(--font-label);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--creme-muted);
+  transition: color 250ms ease;
+}
+
+.reservas-field:focus-within .reservas-field-label {
+  color: var(--terracota-light);
+}
+
+/* Campos nativos (data/horário) — color-scheme: dark força os pop-ups do
+   navegador (calendário/relógio) a nascerem 100% escuros; visualmente,
+   apenas um traço inferior, sem caixa nem preenchimento. */
+.reservas-input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  color-scheme: dark !important;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(200, 90, 50, 0.3);
+  border-radius: 0;
+  color: var(--creme);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 400;
+  padding: 12px 0;
+  cursor: pointer;
+  transition: border-color 300ms var(--ease-out-organic);
+}
+
+.reservas-input::-webkit-calendar-picker-indicator,
+.reservas-input::-webkit-clock-picker-indicator {
+  filter: invert(0.85) sepia(0.6) saturate(3) hue-rotate(5deg);
+  opacity: 0.6;
+  cursor: pointer;
+  transition: opacity 200ms ease;
+}
+
+.reservas-input:hover::-webkit-calendar-picker-indicator,
+.reservas-input:hover::-webkit-clock-picker-indicator {
+  opacity: 1;
+}
+
+.reservas-input:focus {
+  outline: none;
+  border-color: var(--terracota);
+}
+
+/* Stepper de Pessoas — contador direto (− N +), mínimo 1 / máximo 8, sem
+   sufixo "pessoas" no valor exibido. */
+.pessoas-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  border-bottom: 1px solid rgba(200, 90, 50, 0.3);
+  padding: 12px 0;
+}
+
+.stepper-btn {
+  background: none;
+  border: none;
+  color: var(--creme-muted);
+  font-family: var(--font-sans);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: color 200ms ease, transform 200ms ease;
+}
+
+.stepper-btn:hover {
+  color: var(--terracota-light);
+  transform: scale(1.1);
+}
+
+.stepper-btn:active {
+  transform: scale(0.95);
+}
+
+.stepper-btn:disabled {
+  color: rgba(197, 187, 170, 0.3);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.stepper-value {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--creme);
+  min-width: 1.5em;
+  text-align: center;
+}
+
+.reservas-cta {
+  display: block;
+  width: 100%;
+  background: var(--terracota);
+  border: none;
+  border-radius: 2px;
+  color: var(--bg-noir);
+  font-family: var(--font-label);
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+  padding: 16px 24px;
+  cursor: pointer;
+  transition: background-color 300ms ease;
+}
+
+.reservas-cta:hover,
+.reservas-cta:focus-visible {
+  background: var(--ouro);
+  outline: none;
+}
+
+.reservas-note {
+  font-family: var(--font-sans);
+  font-size: 0.76rem;
+  font-weight: 300;
+  color: var(--creme-muted);
+  margin-top: 16px;
+}
+
+.reservas-reassurance {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 300;
+  color: rgba(197, 187, 170, 0.6);
+  margin-top: 8px;
+}
+
+/* Entrada da seção — mesma técnica da Seção Quote (observer dedicado,
+   threshold 0.3, dispara uma única vez), com timings individuais por
+   elemento em vez do stagger uniforme do sistema .reveal genérico. */
+body.js-anim .reservas-title {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.6s var(--ease-out-organic), transform 0.6s var(--ease-out-organic);
+}
+
+body.js-anim .reservas-subtitle {
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-out-organic) 0.2s;
+}
+
+body.js-anim .reservas-field {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s var(--ease-out-organic), transform 0.4s var(--ease-out-organic);
+}
+
+body.js-anim .reservas-field:nth-child(1) { transition-delay: 0s; }
+body.js-anim .reservas-field:nth-child(2) { transition-delay: 0.1s; }
+body.js-anim .reservas-field:nth-child(3) { transition-delay: 0.2s; }
+
+body.js-anim .reservas-cta {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s var(--ease-out-organic) 0.5s,
+              transform 0.4s var(--ease-out-organic) 0.5s,
+              background-color 300ms ease;
+}
+
+body.js-anim .reservas-container.is-visible .reservas-title,
+body.js-anim .reservas-container.is-visible .reservas-subtitle,
+body.js-anim .reservas-container.is-visible .reservas-field,
+body.js-anim .reservas-container.is-visible .reservas-cta {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Seção Quote — Pré-Rodapé — fundo contínuo com o rodapé (mesmo preto,
+   #0a0908), sem linha/borda separando as duas seções: a única transição
+   é o glow esmorecendo + o whitespace generoso. */
+.manifesto-section {
+  padding: 96px 24px;
+  position: relative;
+  text-align: center;
+  background-color: #0a0908;
+  overflow: hidden;
+}
+
+/* Glow radial âmbar "tremulando" atrás do texto (efeito vela) — a opacity
+   do elemento oscila 0.5→1→0.5 sobre um gradiente já fixo em 6% de alfa,
+   resultando no range efetivo 0.03→0.06 percebido na tela. */
+.manifesto-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 300px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(196, 122, 58, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  animation: manifestoGlowPulse 8s ease-in-out infinite;
+}
+
+@keyframes manifestoGlowPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.manifesto-container {
+  position: relative;
+  z-index: 1;
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.manifesto-quote-mark {
+  font-family: var(--font-serif);
+  font-size: clamp(2.6rem, 8vw, 3.75rem);
+  line-height: 1;
+  color: rgba(200, 90, 50, 0.4);
+}
+
+.manifesto-quote {
+  font-family: var(--font-serif);
+  font-size: clamp(1.25rem, 3.2vw, 1.85rem);
+  line-height: 1.45;
+  font-weight: 300;
+  color: #f5f0eb;
+  letter-spacing: -0.01em;
+  margin: 0;
+  font-style: normal;
+}
+
+.quote-line {
+  display: block;
+}
+
+.manifesto-quote em.quote-line {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--terracota-light);
+}
+
+.manifesto-signature {
+  font-family: var(--font-label);
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #a09890;
+  font-style: normal;
+  display: block;
+}
+
+/* Ícone de taça — eco final discreto, sem nome de marca nem link, só o
+   traço se dissolvendo no espaço antes do rodapé. */
+.manifesto-glass-icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  color: rgba(200, 90, 50, 0.4);
+  margin: 64px auto 0;
+}
+
+/* Estados escondido/revelado — só existem sob body.js-anim (JS ativo e sem
+   prefers-reduced-motion). Sem essa classe, os elementos acima ficam no
+   estado natural (visível), evitando conteúdo preso em opacity:0 caso o JS
+   nunca rode. O reveal em si dispara uma única vez a 30% de visibilidade
+   (script.js, observer dedicado da .manifesto-section). */
+body.js-anim .manifesto-quote-mark {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+body.js-anim .quote-line {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+
+body.js-anim .quote-line:nth-child(1) { transition-delay: 0s; }
+body.js-anim .quote-line:nth-child(2) { transition-delay: 0.15s; }
+body.js-anim .quote-line:nth-child(3) { transition-delay: 0.3s; }
+
+body.js-anim .manifesto-signature {
+  opacity: 0;
+  transition: opacity 0.5s ease-out 0.6s;
+}
+
+body.js-anim .manifesto-glass-icon {
+  opacity: 0;
+  transition: opacity 0.8s ease-out 1.2s;
+}
+
+body.js-anim .manifesto-section.is-visible .manifesto-quote-mark {
+  opacity: 1;
+  transform: scale(1);
+}
+
+body.js-anim .manifesto-section.is-visible .quote-line {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+body.js-anim .manifesto-section.is-visible .manifesto-signature,
+body.js-anim .manifesto-section.is-visible .manifesto-glass-icon {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   RODAPÉ EDITORIAL MINIMALISTA (#contato)
+   ========================================================================== */
+.site-footer {
+  width: 100%;
+  background-color: #0a0908;
+}
+
+/* Wrapper interno — fundo do rodapé é full-width (herda do <footer>), mas
+   o conteúdo fica centrado numa coluna estreita, como um cartão de convite. */
+.footer-inner {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 48px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.footer-brand {
+  text-align: center;
+}
+
+.footer-logo {
+  font-family: var(--font-serif);
+  font-feature-settings: var(--serif-features);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--creme);
+}
+
+.footer-logo span {
+  color: var(--terracota);
+}
+
+.footer-tagline {
+  font-family: var(--font-label);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--terracota-light);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-top: 12px;
+}
+
+/* Separador único — 40px, discreto, entre a marca e as informações. */
+.footer-divider {
+  width: 40px;
+  height: 1px;
+  background: rgba(200, 90, 50, 0.2);
+  margin: 32px 0;
+}
+
+.footer-address-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.footer-address-line {
+  font-size: 0.85rem;
+  color: var(--creme-muted);
+  line-height: 1.6;
+}
+
+.footer-address-complement {
+  font-size: 0.72rem;
+  color: rgba(197, 187, 170, 0.6);
+  margin-top: 4px;
+}
+
+.footer-route-link {
+  font-size: 0.76rem;
+  color: var(--terracota-light);
+  text-decoration: none;
+  margin-top: 8px;
+  transition: var(--transition);
+}
+
+.footer-route-link:hover {
+  text-decoration: underline;
+}
+
+.footer-hours-line {
+  margin-top: 32px;
+  font-size: 0.76rem;
+  color: var(--creme-muted);
+}
+
+.footer-hours-closed {
+  color: rgba(197, 187, 170, 0.4);
+}
+
+.footer-contact-block {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.footer-phone-link {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--creme);
+  text-decoration: none;
+}
+
+.footer-phone-link:hover {
+  color: var(--terracota-light);
+}
+
+.footer-social-links {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.footer-social-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.footer-bottom {
+  margin-top: 48px;
+  text-align: center;
+  border-top: none;
+  font-size: 0.72rem;
+  color: rgba(197, 187, 170, 0.4);
+}
+
+/* Entrada do rodapé — fade único (sem stagger, sem translateY), mesma
+   técnica de observer dedicado das seções Sua Mesa / Quote. */
+body.js-anim .site-footer {
+  opacity: 0;
+  transition: opacity 0.6s var(--ease-out-organic);
+}
+
+body.js-anim .site-footer.is-visible {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   RESPONSIVE — TABLET & DESKTOP
+   Abaixo de 768px mantém a estética de "cartão mobile" (moldura, sombra,
+   largura fixa). A partir daí o layout se abre para múltiplas colunas.
+   ========================================================================== */
+@media (min-width: 700px) and (max-width: 1023px) {
+  .mobile-container {
+    max-width: 640px;
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    background: radial-gradient(circle at 50% 0%, #201a15 0%, var(--bg-noir) 60%);
+  }
+
+  .mobile-container {
+    max-width: 1180px;
+    box-shadow: none;
+    border-left: none;
+    border-right: none;
+    padding-bottom: 0;
+  }
+
+  .grain-overlay {
+    opacity: 0.025;
+  }
+
+  .site-header {
+    padding: 0 56px;
+    flex-wrap: nowrap;
+    height: 76px;
+  }
+
+  .site-nav {
+    order: 2;
+    flex: 0 1 auto;
+    overflow: visible;
+    padding-bottom: 0;
+    gap: 36px;
+  }
+
+  .header-actions {
+    order: 3;
+  }
+
+  .hero-section {
+    min-height: 680px;
+    padding: 0 56px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .hero-content {
+    max-width: 620px;
+  }
+
+  .hero-actions {
+    flex-direction: row;
+  }
+
+  .btn-block {
+    width: auto;
+  }
+
+  .section-wrapper,
+  .ambiente-section,
+  .reservas-section {
+    padding: 90px 24px;
+  }
+
+  .manifesto-section {
+    padding: 128px 48px;
+  }
+
+  .manifesto-glow {
+    width: 500px;
+    height: 500px;
+  }
+
+  .manifesto-glass-icon {
+    margin-top: 80px;
+  }
+
+  .ambiente-text-block {
+    max-width: 760px;
+    margin: 0 auto 40px;
+  }
+
+  .ambiente-grid {
+    max-width: 900px;
+    margin: 0 auto;
+    gap: 20px;
+  }
+
+  .footer-inner {
+    padding: 64px 24px 32px;
+  }
+}

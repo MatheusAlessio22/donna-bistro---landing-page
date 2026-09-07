@@ -1,0 +1,51 @@
+{
+  "hero": {
+    "title": "Poucas mesas. Vinhos que não se repetem. Uma noite sem pressa.",
+    "titleEmphasis": "Uma experiência à sua altura.",
+    "image": "images/hero-ambiente.jpg",
+    "ctaLabel": "Solicitar Reserva"
+  },
+  "dishes": [
+    {
+      "title": "Varal de Camarões Crocantes",
+      "image": "images/prato-camarao-varal.jpg",
+      "description": "Camarões nobres empanados na crosta crocante com alecrim fresco e molho tártaro artesanal."
+    },
+    {
+      "title": "Fettuccine Alfredo com Mignon",
+      "image": "images/prato-tagliatelle-mignon.jpg",
+      "description": "Massa fresca artesanal italiana na fonduta cremosa com medalhões de filé mignon na chapa."
+    },
+    {
+      "title": "Burrata Donna Caprese",
+      "image": "images/prato-burrata-caprese.jpg",
+      "description": "Burrata cremosa, tomates confitados no azeite extravirgem, pesto fresco e pão rústico tostado."
+    },
+    {
+      "title": "Risotto Donna ao Funghi",
+      "image": "images/prato-risotto-especial.jpg",
+      "description": "Arroz arbóreo italiano mantecato no caldo de cogumelos silvestres e queijo Grana Padano curado."
+    },
+    {
+      "title": "Petit Gâteau com Gelato de Baunilha",
+      "image": "images/prato-petit-gateau.jpg",
+      "description": "Bolo quente de chocolate nobre com recheio cremoso e gelato artesanal de baunilha."
+    },
+    {
+      "title": "Brownie na Chapa Fumegante",
+      "image": "images/prato-brownie-chapa.jpg",
+      "description": "Brownie artesanal servido na chapa de ferro quente com calda aveludada (ideal para compartilhar)."
+    }
+  ],
+  "contact": {
+    "addressStreet": "R. Ibiporã, 332 — Centro",
+    "addressCity": "Pato Branco — PR",
+    "addressComplement": "Condomínio Edifício Fornari",
+    "hoursWeekday": "Seg a Sex — 18h30 às 23h",
+    "hoursSaturday": "Sáb — 18h30 às 22h",
+    "hoursSunday": "Dom — fechado",
+    "phoneDisplay": "(46) 99106-6023",
+    "phoneE164": "+5546991066023",
+    "mapsUrl": "https://www.google.com/maps/place/Donna+Bistr%C3%B4/@-26.2266541,-52.676675,17z/data=!3m1!4b1!4m6!3m5!1s0x94e5532d06f74101:0xe1ea8e7f0132e6c0!8m2!3d-26.2266589!4d-52.6741001!16s%2Fg%2F11trl416z3"
+  }
+}

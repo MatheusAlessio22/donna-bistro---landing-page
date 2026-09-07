@@ -1,0 +1,57 @@
+# Painel de conteúdo do Donna Bistrô (Decap CMS)
+#
+# IMPORTANTE: o backend abaixo (git-gateway) só autentica depois que o site
+# estiver hospedado na Netlify com Netlify Identity + Git Gateway habilitados.
+# Rodando localmente (localhost:8085) o painel carrega, mas o login falha —
+# isso é esperado até o deploy ser feito. Para usar GitHub diretamente, troque
+# o backend por:
+#   backend:
+#     name: github
+#     repo: usuario/repositorio
+#     branch: main
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "donnabistro/images"
+public_folder: "/images"
+
+collections:
+  - name: "conteudo"
+    label: "Conteúdo do Site"
+    files:
+      - file: "donnabistro/data/content.json"
+        label: "Página Principal"
+        name: "content"
+        fields:
+          - label: "Hero"
+            name: "hero"
+            widget: "object"
+            fields:
+              - { label: "Título Principal", name: "title", widget: "string" }
+              - { label: "Título (linha em destaque)", name: "titleEmphasis", widget: "string" }
+              - { label: "Imagem de Fundo do Hero", name: "image", widget: "image" }
+              - { label: "Texto do Botão de Reserva", name: "ctaLabel", widget: "string" }
+
+          - label: "Pratos do Carrossel"
+            name: "dishes"
+            widget: "list"
+            summary: "{{title}}"
+            fields:
+              - { label: "Nome do Prato", name: "title", widget: "string" }
+              - { label: "Foto do Prato", name: "image", widget: "image" }
+              - { label: "Descrição Poética (sem preço)", name: "description", widget: "text" }
+
+          - label: "Horários e Contato"
+            name: "contact"
+            widget: "object"
+            fields:
+              - { label: "Endereço (Rua e Número)", name: "addressStreet", widget: "string" }
+              - { label: "Cidade", name: "addressCity", widget: "string" }
+              - { label: "Complemento do Endereço", name: "addressComplement", widget: "string" }
+              - { label: "Horário — Seg a Sex", name: "hoursWeekday", widget: "string" }
+              - { label: "Horário — Sábado", name: "hoursSaturday", widget: "string" }
+              - { label: "Horário — Domingo", name: "hoursSunday", widget: "string" }
+              - { label: "Telefone (exibição)", name: "phoneDisplay", widget: "string" }
+              - { label: "Telefone / WhatsApp (formato internacional, ex: +5546991066023)", name: "phoneE164", widget: "string" }
+              - { label: "Link do Google Maps ('Como chegar')", name: "mapsUrl", widget: "string" }
