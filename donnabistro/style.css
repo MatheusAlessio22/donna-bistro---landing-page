@@ -506,28 +506,30 @@ body {
 /* Viewport com máscara gradiente: os pratos surgem/desaparecem suavemente nas bordas.
    Padding extra para o hover-lift dos cards (scale + translateY) não ser cortado. */
 .carousel-viewport {
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
   padding: 14px 0 20px;
+  cursor: grab;
+  user-select: none;
   mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%);
   -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%);
 }
 
-/* Faixa contínua: duas cópias idênticas dos pratos lado a lado, deslizando -50%
-   em loop linear perfeito (a segunda cópia é aria-hidden, só existe para o glide). */
+.carousel-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-viewport.is-dragging {
+  cursor: grabbing;
+}
+
+/* Faixa contínua dos pratos com controle de rolagem por rAF e touch/drag */
 .carousel-track {
   display: flex;
   width: max-content;
-  animation: infiniteScroll 38s linear infinite;
-}
-
-.carousel-viewport:hover .carousel-track,
-.carousel-viewport.is-touching .carousel-track {
-  animation-play-state: paused;
-}
-
-@keyframes infiniteScroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
 }
 
 .carousel-track-group {
@@ -572,6 +574,9 @@ body {
   height: 100%;
   object-fit: cover;
   display: block;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
   transition: transform 300ms var(--ease-spring);
 }
 

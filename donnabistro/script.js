@@ -79,10 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setPessoas(Number(pessoasValueEl.textContent));
   }
 
-  // 3. Carrossel Editorial de Pratos (marquee CSS infinito, pausa suave ao toque)
-  // A animação/loop vive inteiramente em CSS (@keyframes infiniteScroll); aqui só
-  // alternamos a classe que pausa o glide ao toque (o :hover já cobre o desktop)
-  // e reconstruímos as duas faixas duplicadas quando o conteúdo vem do CMS.
+  // 3. Carrossel Editorial de Pratos (Auto-glide suave + Arraste livre por Touch e Mouse)
   function buildDishCardsHtml(dishes) {
     return dishes.map(dish => `
       <article class="carousel-slide">
@@ -95,6 +92,11 @@ document.addEventListener('DOMContentLoaded', () => {
     `).join('');
   }
 
+  // 3 cópias (não 2): o loop depende de rolar uma largura inteira de cópia
+  // antes de resetar, mas o navegador limita scrollLeft a "scrollWidth -
+  // clientWidth" — em telas largas, com só 2 cópias, esse limite fica ABAIXO
+  // do ponto de reset e o carrossel trava no fim. Com 3 cópias sobra scroll
+  // de sobra para o reset sempre ser alcançável, não importa a largura.
   function renderDishSlides(dishes) {
     const track = document.getElementById('carouselTrack');
     if (!track || !Array.isArray(dishes) || !dishes.length) return;
@@ -102,20 +104,109 @@ document.addEventListener('DOMContentLoaded', () => {
     track.innerHTML = `
       <div class="carousel-track-group">${cardsHtml}</div>
       <div class="carousel-track-group" aria-hidden="true">${cardsHtml}</div>
+      <div class="carousel-track-group" aria-hidden="true">${cardsHtml}</div>
     `;
   }
 
-  function initCarouselMarquee() {
+  function initInteractiveCarousel() {
     const viewport = document.getElementById('carouselViewport');
-    if (!viewport) return;
-    const press = () => viewport.classList.add('is-touching');
-    const release = () => viewport.classList.remove('is-touching');
-    viewport.addEventListener('touchstart', press, { passive: true });
-    viewport.addEventListener('touchend', release, { passive: true });
-    viewport.addEventListener('touchcancel', release, { passive: true });
+    const track = document.getElementById('carouselTrack');
+    if (!viewport || !track) return;
+
+    let isDown = false;
+    let startX = 0;
+    let initialScrollLeft = 0;
+    let isInteracting = false;
+    let resumeTimer = null;
+    const speed = 0.75; // pixels por frame
+
+    function pauseGlide() {
+      isInteracting = true;
+      clearTimeout(resumeTimer);
+    }
+
+    function resumeGlide(delay = 1800) {
+      clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(() => {
+        isInteracting = false;
+      }, delay);
+    }
+
+    // Auto-glide contínuo e infinito via requestAnimationFrame. O track tem
+    // 3 cópias idênticas; uma "unidade" de reset é a largura de UMA cópia
+    // (scrollWidth / 3), não da faixa inteira.
+    function autoGlide() {
+      if (!isInteracting && !prefersReducedMotion) {
+        viewport.scrollLeft += speed;
+        const unitWidth = track.scrollWidth / 3;
+        if (unitWidth > 0) {
+          if (viewport.scrollLeft >= unitWidth) {
+            viewport.scrollLeft -= unitWidth;
+          } else if (viewport.scrollLeft <= 0) {
+            viewport.scrollLeft += unitWidth;
+          }
+        }
+      }
+      requestAnimationFrame(autoGlide);
+    }
+
+    // Desktop: Arrastar com o mouse (click & drag)
+    viewport.addEventListener('mousedown', (e) => {
+      isDown = true;
+      pauseGlide();
+      viewport.classList.add('is-dragging');
+      startX = e.pageX - viewport.offsetLeft;
+      initialScrollLeft = viewport.scrollLeft;
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (isDown) {
+        isDown = false;
+        viewport.classList.remove('is-dragging');
+        resumeGlide();
+      }
+    });
+
+    viewport.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - viewport.offsetLeft;
+      const walk = (x - startX) * 1.3;
+      viewport.scrollLeft = initialScrollLeft - walk;
+    });
+
+    // Pausa suave no hover simples do mouse
+    viewport.addEventListener('mouseenter', () => {
+      if (!isDown) pauseGlide();
+    });
+
+    viewport.addEventListener('mouseleave', () => {
+      if (!isDown) resumeGlide(800);
+    });
+
+    // Mobile: Touch swipe & scroll com inércia nativa do celular
+    viewport.addEventListener('touchstart', () => {
+      pauseGlide();
+    }, { passive: true });
+
+    viewport.addEventListener('touchend', () => {
+      resumeGlide(2200);
+    }, { passive: true });
+
+    viewport.addEventListener('touchcancel', () => {
+      resumeGlide(1000);
+    }, { passive: true });
+
+    // Scroll com a roda do mouse (trackpad / mouse wheel)
+    viewport.addEventListener('wheel', () => {
+      pauseGlide();
+      resumeGlide(1500);
+    }, { passive: true });
+
+    requestAnimationFrame(autoGlide);
   }
 
-  initCarouselMarquee();
+  initInteractiveCarousel();
 
   // 4. Hero — Título com Reveal Escalonado por Frase (stagger 0.12s, delay
   // inicial 0.4s, on-mount). O texto estático já garante SEO/no-JS; aqui só
