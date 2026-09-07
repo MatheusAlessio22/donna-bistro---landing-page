@@ -293,7 +293,7 @@ body {
   position: absolute;
   inset: 0;
   background-size: cover;
-  background-position: center 45%;
+  background-position: center center;
   background-repeat: no-repeat;
   z-index: 0;
   animation: heroBreathe 12s ease-in-out infinite alternate;
